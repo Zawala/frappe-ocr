@@ -9,21 +9,18 @@ import os
 from frappe.utils import cstr
 import pytesseract
 
-class ScannedDocument(Document):
+class FileManager(Document):
     def before_save(self):
-        path = os.getcwd()
-        print(path)
-        site = cstr(frappe.local.site)
-        img = cv2.imread(f'{path}/{site}{self.file}')
-        gray = self.get_grayscale(img)
-        thresh = self.thresholding(gray)
-        opening = self.opening(gray)
-        canny = self.canny(gray)
-
-        # Adding custom options
-        custom_config = r'--oem 3 --psm 6'
-        self.scanned_contents = pytesseract.image_to_string(img, config=custom_config)
-        print(pytesseract.image_to_string(thresh, config=custom_config))
+        try:
+            path = os.getcwd()
+            site = cstr(frappe.local.site)
+            img = cv2.imread(f'{path}/{site}{self.file}')
+            gray = self.get_grayscale(img)
+            thresh = self.thresholding(gray)
+            custom_config = r'--oem 3 --psm 6'
+            self.scanned_contents = pytesseract.image_to_string(img, config=custom_config)
+        except Exception as e:
+            frappe.msgprint('Please Check file')
 
     def get_grayscale(self,image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

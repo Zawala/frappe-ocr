@@ -5,5 +5,5 @@
 from frappe.tests.utils import FrappeTestCase
 
 
-class TestScannedDocument(FrappeTestCase):
+class TestFileManager(FrappeTestCase):
 	pass
