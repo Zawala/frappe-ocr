@@ -1,6 +1,6 @@
 ## Ocr
 
-get test from images and pdf
+get text from images and pdf
 
 #### License
 
