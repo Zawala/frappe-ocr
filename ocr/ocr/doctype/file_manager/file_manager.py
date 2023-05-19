@@ -5,22 +5,39 @@ import frappe
 from frappe.model.document import Document
 import cv2
 import numpy as np 
+from PIL import Image
 import os
+from pdf2image import convert_from_path
 from frappe.utils import cstr
 import pytesseract
 
 class FileManager(Document):
+
     def before_save(self):
-        try:
-            path = os.getcwd()
-            site = cstr(frappe.local.site)
-            img = cv2.imread(f'{path}/{site}{self.file}')
-            gray = self.get_grayscale(img)
-            thresh = self.thresholding(gray)
-            custom_config = r'--oem 3 --psm 6'
-            self.scanned_contents = pytesseract.image_to_string(img, config=custom_config)
-        except Exception as e:
-            frappe.msgprint('Please Check file')
+        path = os.getcwd()
+        site = cstr(frappe.local.site)
+        path=f'{path}/{site}{self.file}'
+        if os.path.isfile(path):
+            try:
+                file_extension = os.path.splitext(path)[1]
+                if file_extension.lower() in {'.pdf'}:
+                    doc = convert_from_path(path)
+              
+                    text = ""
+                    for page in doc:
+                        text += pytesseract.image_to_string(page)
+                    self.scanned_contents = text
+                else:
+                    img = cv2.imread(path)
+                    gray = self.get_grayscale(img)
+                    thresh = self.thresholding(gray)
+                    custom_config = r'--oem 3 --psm 6'
+                    self.scanned_contents = pytesseract.image_to_string(img, config=custom_config)
+            except Exception as e:
+                frappe.msgprint(f'Error in file. {e}')
+    
+        
+
 
     def get_grayscale(self,image):
         return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
