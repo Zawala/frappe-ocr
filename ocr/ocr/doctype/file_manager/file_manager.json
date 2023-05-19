@@ -29,6 +29,7 @@
   {
    "fieldname": "scanned_contents",
    "fieldtype": "Text",
+   "hidden": 1,
    "in_filter": 1,
    "in_list_view": 1,
    "in_preview": 1,
@@ -38,7 +39,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2023-05-19 21:51:54.460122",
+ "modified": "2023-05-19 21:59:48.575800",
  "modified_by": "Administrator",
  "module": "Ocr",
  "name": "File Manager",
